@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "outDir": "./js",
+    "allowJs": true,
+    "target": "ESNEXT"
+    "strictNullChecks": true,
+    "removeComments": true
+  },
+  "include": [
+    "./ts/*"
+  ]
+}
