@@ -1,0 +1,28 @@
+{
+  "name": "leetcode",
+  "version": "1.0.0",
+  "description": "leetcode算法练习",
+  "main": "外星字典.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/guojingwen/leetcode.git"
+  },
+  "keywords": [],
+  "author": "dashu",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/guojingwen/leetcode/issues"
+  },
+  "homepage": "https://github.com/guojingwen/leetcode#readme",
+  "devDependencies": {
+    "eslint": "^8.51.0",
+    "prettier": "^3.0.3",
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "vitest": "^0.34.6"
+  }
+}

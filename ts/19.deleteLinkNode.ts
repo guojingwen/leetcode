@@ -6,22 +6,22 @@
  * }
  */
 interface ListNode {
-    val: number;
-    next: ListNode | null;
+  val: number;
+  next: ListNode | null;
 }
 function createLink(arr: number[]): ListNode {
-    const listNode: ListNode = {
-        val: arr[0],
-        next: null,
-    }
-    arr.slice(1).reduce((sum, item) => {
-        sum.next = {
-            val: item,
-            next: null,
-        } as ListNode;
-        return sum.next;
-    }, listNode);
-    return listNode;
+  const listNode: ListNode = {
+    val: arr[0],
+    next: null,
+  };
+  arr.slice(1).reduce((sum, item) => {
+    sum.next = {
+      val: item,
+      next: null,
+    } as ListNode;
+    return sum.next;
+  }, listNode);
+  return listNode;
 }
 // const head = createLink([1,2,3,4,5]);
 // console.log(removeNthFromEnd(head, 2));
@@ -55,27 +55,24 @@ console.log(removeNthFromEnd(head, 1));
 // }
 
 /*  优化：一次扫描， 空间换时间 */
-function removeNthFromEnd(head: ListNode | null, n: number) {
-    if(!head) return null;
-    let prevNode: ListNode = head;
-    let distance = 0;
-    let currentNode: ListNode = head;
-    while (currentNode.next) {
-        currentNode = currentNode.next;
-        if(distance < n) {
-            distance++;
-        } else if(distance === n) { // === n
-            prevNode = prevNode.next as ListNode;
-        }
-    }
-    if(distance === n) {
-        if(prevNode.next) {
-            prevNode.next = (prevNode.next as ListNode).next
-        } else {
-            return prevNode.next;
-        }
-    } else if (distance === n-1) {
-        return prevNode.next;
-    }
+export function removeNthFromEnd(head: ListNode | null, n: number) {
+  if (!head) return null;
+  let head2: ListNode | null = head;
+  let i = 0;
+  while (head2 && i < n) {
+    head2 = head2.next;
+    i++;
+  }
+  if (!head2) {
+    if (n == 1) return null;
+    if (n === i) return head.next;
     return head;
+  }
+  let head3: ListNode | null = head;
+  while (head2?.next) {
+    head3 = head3!.next;
+    head2 = head2.next;
+  }
+  head3!.next = head3!.next!.next;
+  return head;
 }

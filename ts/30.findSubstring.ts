@@ -47,36 +47,38 @@ function findSubstring(s: string, words: string[]): number[] {
 
 // 方法2 滑动窗口
 // https://biaodigit.github.io/LeetCode/0030/#%E8%A7%A3%E9%A2%98%E6%80%9D%E8%B7%AF
-var s = "wordgoodgoodgoodbestword", words = ["word","good","best","good"];
+var s = 'wordgoodgoodgoodbestword',
+  words = ['word', 'good', 'best', 'good'];
 console.log(findSubstring(s, words));
 function findSubstring(s: string, words: string[]): number[] {
-    const res: number[] = [];
-    if(!words.length) return res;
-    const len = words[0].length;
-    const wLen = words.length;
-    const allLen = len * wLen;
+  const res: number[] = [];
+  if (!words.length) return res;
+  const len = words[0].length;
+  const wLen = words.length;
+  const allLen = len * wLen;
 
-    for(let i = 0; i<= s.length - allLen; i++) {
-        const subStr = s.substring(i, i+allLen);
-        const flag = check(subStr, words.slice());
-        if(flag) {
-            res.push(i);
-        }
+  for (let i = 0; i <= s.length - allLen; i++) {
+    const subStr = s.substring(i, i + allLen);
+    // if(words)
+    const flag = check(subStr, words.slice());
+    if (flag) {
+      res.push(i);
     }
-    return res;
-    function check(subStr, words): boolean {
-        let flag = true;
-        while (subStr.length) {
-            const first = subStr.substring(0, len);
-            const index = words.findIndex(word => word === first);
-            if(index === -1) {
-                flag = false;
-                break;
-            } else {
-                words.splice(index, 1);
-                subStr = subStr.substring(len);
-            }
-        }
-        return flag
+  }
+  return res;
+  function check(subStr, words): boolean {
+    let flag = true;
+    while (subStr.length) {
+      const first = subStr.substring(0, len);
+      const index = words.findIndex((word) => word === first);
+      if (index === -1) {
+        flag = false;
+        break;
+      } else {
+        words.splice(index, 1);
+        subStr = subStr.substring(len);
+      }
     }
+    return flag;
+  }
 }

@@ -2,22 +2,22 @@ var words = ["apple","app"], order = "hlabcdefgijkmnopqrstuvwxyz";
 
 console.log(isAlienSorted(words, order));
 function isAlienSorted(words, order) {
-  let oldWords = words.join(',');
+  let oldWords = words.join(','); 
   const map = Array.from(order).reduce((sum, key, index) => {
-    sum[key] = index;
-    return sum
+    sum[key] = index;   
+    return sum;
   }, {});
-  const newWards = words.sort((word1, word2) => {
-    return compare(word1, word2)
+  const newWards2 = words.sort((word1, word2) => {
+    return compare2(word1, word2)
   })
-  return newWards.join(',') === oldWords
+  return newWards2.join(',') === oldWords;
 
-  function compare(word1, word2) {
+  function compare2(word1, word2) {
     for(let i = 0; i<= word1.length && i<=word2.length; i++) {
       if(!word2[i]) return 1;
       if(!word1[i]) return -1;
       if(word1[i] === word2[i]) {
-        continue
+        continue;
       } else if(map[word1[i]] > map[word2[i]]) {
         return 1
       } else {
@@ -26,3 +26,5 @@ function isAlienSorted(words, order) {
     }
   }
 };
+
+console.log('ccc')
