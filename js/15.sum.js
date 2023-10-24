@@ -1,55 +1,38 @@
-function threeSum(arr) {
-    arr = arr.sort((a, b) => a - b);
-    const result = new Set();
-    if (arr.length < 3)
+export function threeSum(nums) {
+    nums.sort((a, b) => a - b);
+    if (nums.length < 3)
         return [];
-    for (let i = 0; i < arr.length - 2; i++) {
-        if (arr[i] > 0) {
-            break;
-        }
-        for (let j = i + 1; j < arr.length - 1; j++) {
-            if (arr[i] + arr[j] > 0) {
-                break;
-            }
-            for (let k = j + 1; k < arr.length; k++) {
-                const sum = arr[i] + arr[j] + arr[k];
-                if (sum > 0) {
-                    break;
-                }
-                if (sum === 0) {
-                    result.add([arr[i], arr[j], arr[k]].join(','));
-                    break;
-                }
-            }
-        }
-    }
-    return [...result].map(it => it.split(','));
-}
-console.log(threeSum2([-2, 0, 1, 1, 2]));
-function threeSum2(arr) {
-    arr.sort((a, b) => a - b);
-    const result = new Set();
-    if (arr.length < 3)
+    if (nums[0] > 0)
         return [];
-    for (let i = 0; i < arr.length - 2; i++) {
-        const a = arr[i];
-        let start = i + 1;
-        let end = arr.length - 1;
-        while (start < end) {
-            const b = arr[start];
-            const c = arr[end];
-            if (a + b + c > 0) {
-                end--;
+    if (nums[nums.length - 1] < 0)
+        return [];
+    const result = [];
+    const cache = {};
+    for (let i = 0; i < nums.length - 2; i++) {
+        const first = nums[i];
+        const _nums = nums.slice();
+        _nums.splice(i, 1);
+        let startIndex = 0, endIndex = _nums.length - 1;
+        while (startIndex < endIndex) {
+            const sum = first + _nums[startIndex] + _nums[endIndex];
+            if (sum === 0) {
+                const item = [first, _nums[startIndex], _nums[endIndex]].sort((a, b) => a - b);
+                const key = item.join('_');
+                if (!cache[key]) {
+                    cache[key] = true;
+                    result.push(item);
+                }
+                startIndex++;
+                endIndex--;
+                continue;
             }
-            else if (a + b + c === 0) {
-                result.add([a, b, c].join(','));
-                start++;
-                end--;
+            else if (sum > 0) {
+                endIndex--;
             }
             else {
-                start++;
+                startIndex++;
             }
         }
     }
-    return [...result].map(it => it.split(','));
+    return result;
 }

@@ -22,4 +22,3 @@ function strStr(haystack, needle) {
         return flag;
     }
 }
-;

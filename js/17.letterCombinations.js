@@ -1,4 +1,3 @@
-console.log(letterCombinations('23'));
 function letterCombinations(str) {
     const map = {
         2: ['a', 'b', 'c'],
@@ -13,17 +12,17 @@ function letterCombinations(str) {
     if (!str.length)
         return [];
     const result = [];
-    run('', str);
-    function run(resolvedStr, remainStr = '') {
-        if (remainStr === '') {
-            return result.push(resolvedStr);
+    run(str, '');
+    return result;
+    function run(str, one) {
+        if (str === '') {
+            result.push(one);
+            return;
         }
-        const numb = remainStr[0];
-        const arr = map[numb];
-        const subStr = remainStr.substring(1);
-        arr.forEach(letter => {
-            run(resolvedStr + letter, subStr);
+        const key = str[0];
+        const newStr = str.substring(1);
+        map[key].forEach((char) => {
+            run(newStr, one + char);
         });
     }
-    return result;
 }

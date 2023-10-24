@@ -12,22 +12,16 @@ function createLink(arr) {
     }, listNode);
     return listNode;
 }
-const head = createLink([1]);
-console.log(removeNthFromEnd(head, 1));
-export function removeNthFromEnd(head, n) {
+function removeNthFromEnd(head, n) {
     if (!head)
         return null;
     let head2 = head;
-    let i = 0;
-    while (head2 && i < n) {
+    let i = 1;
+    while (head2 && i <= n) {
         head2 = head2.next;
         i++;
     }
     if (!head2) {
-        if (n == 1)
-            return null;
-        if (n === i)
-            return head.next;
         return head;
     }
     let head3 = head;

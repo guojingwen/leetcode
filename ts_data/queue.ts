@@ -14,6 +14,7 @@ export class Queue<T = any> {
   dequeue() {
     if (this.isEmpty) return;
     const result = this.#items[this.#lowest + 1];
+    delete this.#items[this.#lowest + 1];
     this.#lowest++;
     return result;
   }

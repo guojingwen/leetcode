@@ -1,43 +1,36 @@
-console.log(intToRoman(1994))
-// MCMXCIV"
-function intToRoman(num) {
-  const romanNums = ['I', 'V', 'X', 'L', 'C', 'D', 'M'].reverse();
-  const romanPrices = [1, 5, 10, 50, 100, 500, 1000].reverse();
-
-  const map = romanNums.reduce((sum, roman, index) => {
-    sum[roman] = romanPrices[index];
-    // sum[sum[roman]] = roman
-    return sum;
-  }, {});
-  const prevMap = {
-    M: 'C',
-    D: 'C',
-    C: 'X',
-    L: 'X',
-    X: 'I',
-    V: 'I'
-  }
-  let str = '';
-  let remain = num;
-  while (remain) {
-    for(let i = 0; i< romanNums.length; i++) {
-      const roman = romanNums[i];
-      const price = map[roman];
-      const prevRoman = prevMap[roman];
-      if(remain >= price) {
-        remain-=price;
-        str += roman;
-        break;
-      } else if(prevRoman) {
-        const min = price - (map[prevRoman]);
-        if(remain < price  && remain >= min) {
-          remain -= min;
-          str += `${prevRoman}${roman}`;
-          break;
+export function intToRoman(num) {
+    const config = [
+        ['I', 1],
+        ['IV', 4],
+        ['V', 5],
+        ['IX', 9],
+        ['X', 10],
+        ['XL', 40],
+        ['L', 50],
+        ['XC', 90],
+        ['C', 100],
+        ['CD', 400],
+        ['D', 500],
+        ['CM', 900],
+        ['M', 1000],
+    ];
+    const nums = config.map((it) => it[1]);
+    const map = config.reduce((sum, it) => {
+        const [str, num] = it;
+        sum[str] = num;
+        sum[num] = str;
+        return sum;
+    }, {});
+    let result = '';
+    while (num > 0) {
+        for (let j = nums.length - 1; j >= 0; j--) {
+            const n = nums[j];
+            if (num >= n) {
+                num -= n;
+                result += map[n];
+                break;
+            }
         }
-      }
     }
-  }
-  return str;
-};
-
+    return result;
+}

@@ -1,23 +1,16 @@
-console.log(longestCommonPrefix(["flower", "flow", "flight"]));
-function longestCommonPrefix(strs) {
-    if (strs.length === 1)
-        return strs[0];
+export function longestCommonPrefix(strs) {
+    const len = Math.min(...strs.map((it) => it.length));
+    if (len === 0)
+        return '';
     let i = 0;
-    let str = '';
-    while (notEnd(i)) {
-        for (let j = 1; j < strs.length; j++) {
-            if (strs[0][i] !== strs[j][i]) {
-                return str;
-            }
-            if (j === strs.length - 1) {
-                str += strs[0][i];
-                i++;
-            }
+    const str = strs.pop();
+    while (i < len) {
+        const char = str[i];
+        const flag = strs.some((_str) => _str[i] !== char);
+        if (flag) {
+            break;
         }
+        i++;
     }
-    return str;
-    function notEnd(i) {
-        return !strs.some(str => str.length <= i);
-    }
+    return str.substring(0, i);
 }
-;

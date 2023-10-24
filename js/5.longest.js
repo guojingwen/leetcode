@@ -1,96 +1,79 @@
-function findMaxStr(str) {
-    let max = str[0];
-    for (let i = 0; i < str.length; i++) {
-        for (let j = i + 1; j <= str.length; j++) {
-            let item = str.substr(i, j);
-            if (item === [...item].reverse().join('')) {
-                max = item.length > max.length ? item : max;
+export function longestPalindrome1(s) {
+    if (!s.length)
+        return '';
+    let start = 0;
+    let max = 1;
+    for (let i = 0; i < s.length - 1; i++) {
+        for (let j = i + max; j <= s.length; j++) {
+            const str = s.substring(i, j);
+            if (str === [...str].reverse().join('') && j - i > max) {
+                max = j - i;
+                start = i;
             }
         }
     }
-    return max;
+    return s.substring(start, start + max);
 }
-function longestPalindrome(str) {
-    let max = str[0];
-    if (str.length < 2)
-        return max;
-    if (str.length < 3)
-        return str[0] === str[1] ? str : max;
-    const dp = Array.from({ length: str.length }, () => Array.from({ length: str.length }, () => ''));
-    for (let i = 0; i < str.length; i++) {
-        dp[i][i] = true;
+export function longestPalindrome2(s) {
+    if (!s.length)
+        return '';
+    const dp = Array.from({ length: s.length }, () => Array.from({ length: s.length }, () => 0));
+    for (let i = 0; i < s.length; i++) {
+        dp[i][i] = 1;
     }
-    for (let i = 0; i < str.length - 1; i++) {
-        dp[i][i + 1] = str[i] === str[i + 1];
-        if (dp[i][i + 1]) {
-            max = max.length < 2 ? str.substr(i, 2) : max;
-        }
-    }
-    for (let j = 3; j <= str.length; j++) {
-        for (let i = 0; i <= str.length - j; i++) {
-            const flag = dp[i][i + j - 1] = (str[i] === str[i + j - 1]) && dp[i + 1][i + j - 2];
-            if (flag) {
-                if (j > max.length) {
-                    max = str.substr(i, j);
+    let max = 1;
+    let start = 0;
+    for (let len = 2; len <= s.length; len++) {
+        for (let i = 0; i <= s.length - len; i++) {
+            let isCenterPalind = false;
+            if (len % 2 === 1) {
+                isCenterPalind = !!dp[i + 1][i + len - 2];
+            }
+            else {
+                if (len === 2) {
+                    isCenterPalind = true;
+                }
+                else {
+                    isCenterPalind = !!dp[i + 1][i + len - 2];
+                }
+            }
+            if (isCenterPalind && s[i] === s[i + len - 1]) {
+                dp[i][i + len - 1] = len;
+                if (len > max) {
+                    max = len;
+                    start = i;
                 }
             }
         }
     }
     console.log(dp);
-    return max;
+    return s.substring(start, start + max);
 }
-console.log(longestPalindrome2('ddcdcd'));
-function longestPalindrome2(str) {
+export function longestPalindrome(s) {
+    if (s === '')
+        return '';
     let begin = 0;
     let len = 1;
-    for (let i = 0; i < str.length - 1; i++) {
-        const oddLen = expandAroundCenter(str, i, i);
-        const evenLen = expandAroundCenter(str, i, i + 1);
-        const currentLen = Math.max(oddLen, evenLen);
-        if (currentLen > len) {
-            len = currentLen;
-            begin = i - Math.floor((currentLen - 1) / 2);
+    for (let i = 0; i < s.length - 1; i++) {
+        const oddLen = expandAroundCenter(i, i);
+        const evenLen = expandAroundCenter(i, i + 1);
+        const max = Math.max(oddLen, evenLen);
+        if (max > len) {
+            begin = i - Math.floor((max - 1) / 2);
+            len = max;
         }
     }
-    return str.substr(begin, len);
-    function expandAroundCenter(str, left, right) {
-        let i = left;
-        let j = right;
-        while (i >= 0 && j < str.length) {
-            if (str[i] === str[j]) {
-                i--;
-                j++;
-            }
-            else {
+    return s.substring(begin, begin + len);
+    function expandAroundCenter(i, j) {
+        let len = i === j ? -1 : 0;
+        while (i >= 0 && j < s.length) {
+            if (s[i] !== s[j]) {
                 break;
             }
+            len += 2;
+            --i;
+            ++j;
         }
-        return j - i - 1;
+        return len;
     }
 }
-function findMedianSortedArrays(nums1, nums2) {
-    const nums = [];
-    while (nums1.length || nums2.length) {
-        if (!nums1.length) {
-            nums.push(nums2.shift());
-        }
-        else if (!nums2.length) {
-            nums.push(nums1.shift());
-        }
-        else {
-            if (nums1[0] > nums2[0]) {
-                nums.push(nums2.shift());
-            }
-            else {
-                nums.push(nums1.shift());
-            }
-        }
-    }
-    ;
-    if (nums.length % 2) {
-        return nums[Math.floor(nums.length / 2)];
-    }
-    const centerIndex = nums.length / 2;
-    return (nums[centerIndex - 1] + nums[centerIndex]) / 2;
-}
-;

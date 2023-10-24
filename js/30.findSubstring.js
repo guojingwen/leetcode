@@ -1,4 +1,4 @@
-var s = "wordgoodgoodgoodbestword", words = ["word", "good", "best", "good"];
+var s = 'wordgoodgoodgoodbestword', words = ['word', 'good', 'best', 'good'];
 console.log(findSubstring(s, words));
 function findSubstring(s, words) {
     const res = [];
@@ -19,7 +19,7 @@ function findSubstring(s, words) {
         let flag = true;
         while (subStr.length) {
             const first = subStr.substring(0, len);
-            const index = words.findIndex(word => word === first);
+            const index = words.findIndex((word) => word === first);
             if (index === -1) {
                 flag = false;
                 break;
