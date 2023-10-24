@@ -1,6 +1,6 @@
 import { DoubleLinkList } from './doubleLinkedList';
 
-export class StackLinkedList<T> {
+export class StackLinkedList<T = any> {
   public items = new DoubleLinkList<T>();
   constructor() {}
   push(element: T) {
@@ -11,5 +11,8 @@ export class StackLinkedList<T> {
       return undefined;
     }
     return this.items.remove();
+  }
+  size(): number {
+    return this.items.size;
   }
 }

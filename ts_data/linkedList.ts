@@ -9,7 +9,7 @@ export class LinkedList<T = any> {
   constructor(public equalsFn = (a: T, b: T) => a === b) {}
   push(element: T) {
     const node = new MyNode(element);
-    let current: undefined | MyNode<T>;
+    let current: MyNode<T> | null = null;
     if (this.head == null) {
       this.head = node;
     } else {
@@ -114,7 +114,7 @@ export class CircularLinkedList<T = any> extends LinkedList {
           node.next = this.head;
         } else {
           node.next = current;
-          current = this.getElementAt(this.size())!;
+          current = this.getElementAt(this.size() - 1)!;
           this.head = node;
           current.next = this.head;
         }
@@ -172,12 +172,17 @@ export class SortedListList<T = any> extends LinkedList {
   ) {
     super(equalsFn);
   }
-  insert(element: T, index = 0) {
+  push(element: T) {
     if (this.isEmpty()) {
-      return super.insert(element, index);
+      return super.insert(element, 0);
     }
     const pos = this.getIndexNextSortedElement(element);
     return super.insert(element, pos);
+  }
+  /** * @deprecated SortedListList not support method of insert */
+  insert(element: T, index: number) {
+    // throw new Error('SortedListList not support method of insert');
+    return false;
   }
   getIndexNextSortedElement(element: T): number {
     let current = this.head!;
@@ -195,4 +200,3 @@ export class SortedListList<T = any> extends LinkedList {
 
 // 判断一个链表是否有环 设置两个变量 一个跑1步，一个跑两步，如果前一个能
 // 移除链表倒说第N个元素 设置两个变量 一个先跑N步，当先跑的到头， 则另一个变量就是需要操作的
-//

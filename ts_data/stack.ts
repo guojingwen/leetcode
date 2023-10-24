@@ -1,5 +1,5 @@
 export class Stack<T = any> {
-  // 这里为了leetcode调试方便咱不使用es6私有属性
+  // 这里为了leetcode调试方便暂不使用es6私有属性
   // #size = 0;
   _size = 0;
   get size() {
@@ -30,7 +30,7 @@ export class Stack<T = any> {
     return this._items[this._size - 1];
   }
   clear() {
-    this._items = Object.create({});
+    this._items = Object.create(null);
     this._size = 0;
   }
   toString() {
