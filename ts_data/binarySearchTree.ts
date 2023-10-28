@@ -3,42 +3,43 @@ export class TreeNode<T = any> {
   public right: TreeNode<T> | null = null;
   constructor(public key: T) {}
 }
-// 二叉树
+
 export class BinarySearchTree<T = any> {
   public root: TreeNode<T> | null = null;
-  constructor(public compareFN = (a, b) => a - b) {
-    this.root = null; // {1} Node
+  constructor(public compareFn = (a, b) => a - b) {
+    this.root = null;
   }
   insert(key: T): void {
     if (this.root === null) {
       this.root = new TreeNode(key);
     } else {
-      this.insertNode(this.root, key);
+      this.insertNode(this.root!, key);
     }
   }
   insertNode(node: TreeNode, key: T) {
-    if (this.compareFN(key, node.key) < 0) {
-      if (node.left === null) {
-        node.left = new TreeNode(key);
-      } else {
-        this.insertNode(node.left, key);
-      }
-    } else {
+    if (this.compareFn(key, node.key) > 0) {
       if (node.right === null) {
         node.right = new TreeNode(key);
       } else {
         this.insertNode(node.right, key);
+      }
+    } else {
+      if (node.left === null) {
+        node.left = new TreeNode(key);
+      } else {
+        this.insertNode(node.left, key);
       }
     }
   }
   search(key: T, node = this.root): boolean {
     if (!node) return false;
     let current = node;
-    const diff = this.compareFN(key, current.key);
+    const diff = this.compareFn(key, current.key);
     if (diff === 0) {
       return true;
     }
-    return this.search(key, diff > 0 ? current.right : current.left);
+    const currentNode = diff > 0 ? current.right : current.left;
+    return this.search(key, currentNode!);
   }
   min(): TreeNode<T> {
     if (this.root == null) throw new Error();
@@ -56,42 +57,39 @@ export class BinarySearchTree<T = any> {
     }
     return current;
   }
-  remove(key: T): void {
+  remove(key: T) {
     this.root = this.removeNode(this.root, key);
   }
   removeNode(node: TreeNode<T> | null, key: T): TreeNode<T> | null {
-    if (node === null) {
-      return null;
+    if (!node) return null;
+    const diff = this.compareFn(key, node.key);
+
+    if (diff > 0) {
+      node.right = this.removeNode(node.right, key);
+      return node;
     }
-    const diff = this.compareFN(key, node.key);
     if (diff < 0) {
       node.left = this.removeNode(node.left, key);
       return node;
-    } else if (diff > 0) {
-      node.right = this.removeNode(node.right, key);
-      return node;
-    } else {
-      if (node.left === null && node.right === null) {
-        node = null;
-        return node;
-      } else if (node.left === null) {
-        node = node.right;
-        return node;
-      } else if (node.right === null) {
-        node = node.left;
-        return node;
-      }
-
-      const aux = this.minNode(node.right);
-      node.key = aux.key;
-      node.right = this.removeNode(node.right, aux.key);
-      return node;
     }
+    if (node.left === null && node.right === null) {
+      return null;
+    }
+    if (node.left === null) {
+      return node.right;
+    }
+    if (node.right === null) {
+      return node.left;
+    }
+    const aux = this.minNode(node.right);
+    node.key = aux.key;
+    this.removeNode(node.right, aux.key);
+    return node;
   }
-  minNode(node: TreeNode<T>) {
+  minNode(node: TreeNode<T>): TreeNode<T> {
     let current = node;
-    while (current !== null && current.left! == null) {
-      current = current.left!;
+    while (current.left) {
+      current = current.left;
     }
     return current;
   }

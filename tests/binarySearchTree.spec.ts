@@ -54,6 +54,6 @@ describe('测试二叉搜索树', () => {
     tree!.remove(5);
     const result: number[] = [];
     tree!.preOrderTraverse((it: number) => result.push(it));
-    expect(result).toEqual([3, 2, 1, 7, 4, 6]);
+    expect(result).toEqual([3, 2, 1, 6, 4, 7]);
   });
 });

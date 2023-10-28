@@ -65,9 +65,10 @@ export default class AVLTree<T = any> extends BinarySearchTree {
     // c1     3      rotateRight=> c1    2    rotateLeft=>   1       3
     //      2    c4                    c2   3              c1 c2    c3 c4
     //    c2 c3                            c3 c4
-    node.left = this.rotationLL(node.right!);
+    node.right = this.rotationLL(node.right!);
     return this.rotationRR(node);
   }
+
   insert(key: T) {
     this.root = this.insertNode(this.root, key);
   }
@@ -75,9 +76,9 @@ export default class AVLTree<T = any> extends BinarySearchTree {
     // 插入同BST
     if (node == null) {
       return new TreeNode(key);
-    } else if (this.compareFN(key, node.key) < 0) {
+    } else if (this.compareFn(key, node.key) < 0) {
       node.left = this.insertNode(node.left, key);
-    } else if (this.compareFN(key, node.key) > 0) {
+    } else if (this.compareFn(key, node.key) > 0) {
       node.right = this.insertNode(node.right, key);
     } else {
       return node; // 重复的键
@@ -86,7 +87,7 @@ export default class AVLTree<T = any> extends BinarySearchTree {
     // 如果需要对树进行平衡操作
     const balanceFactor = this.getBalanceFactor(node);
     if (balanceFactor === BalanceFactor.UNBALANCED_LEFT) {
-      if (this.compareFN(key, node.left!.key) < 0) {
+      if (this.compareFn(key, node.left!.key) < 0) {
         node = this.rotationLL(node);
       } else {
         return this.rotationLR(node);
