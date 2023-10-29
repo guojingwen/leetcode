@@ -1,42 +1,38 @@
 import { Queue } from './queue';
-import { Stack } from './stack';
+import { Stack } from './Stack';
 
 enum Colors {
   WHITE,
   GREY,
   BLACK,
 }
-const initializeColor = (vertices: Set<any>) => {
-  const color = {};
-  vertices.forEach((v) => {
-    color[v] = Colors.WHITE;
-  });
-  return color;
-};
-export class Graph<T extends string = any> {
-  vertices = new Set<T>(); // 顶点
-  adjList = new Map<T, Set<T>>(); // 邻接表
-  constructor(public isDirected = false) {
-    // 默认是无向图
-  }
-  addVertex(v: T) {
-    // 添加顶点
+
+export class Graph<T = any> {
+  private vertices = new Set<T>(); // 顶点
+  private adjList = new Map<T, Set<T>>(); // 邻接表
+  constructor(public isDirected = false) {}
+  addVertices(v: T) {
     if (!this.vertices.has(v)) {
       this.vertices.add(v);
       this.adjList.set(v, new Set<T>());
     }
   }
   addEdge(v: T, w: T) {
-    // 添加边
-    if (!this.adjList.get(v)) {
-      this.addVertex(v);
+    this.vertices.add(v);
+    this.vertices.add(w);
+    let u = this.adjList.get(v);
+    if (!u) {
+      u = new Set<T>();
+      this.adjList.set(v, u);
     }
-    if (!this.adjList.get(w)) {
-      this.addVertex(w);
-    }
-    this.adjList.get(v)!.add(w);
+    u.add(w);
     if (!this.isDirected) {
-      this.adjList.get(w)!.add(v);
+      let u2 = this.adjList.get(w);
+      if (!u2) {
+        u2 = new Set<T>();
+        this.adjList.set(w, u2);
+      }
+      u2.add(v);
     }
   }
   getVertices() {
@@ -58,6 +54,8 @@ export class Graph<T extends string = any> {
   }
 }
 
+// 广度优先遍历
+// 队列 + 标记
 export function breadthFirstSearch<T extends string = any>(
   graph: Graph<T>,
   startVertex: T,
@@ -65,86 +63,99 @@ export function breadthFirstSearch<T extends string = any>(
 ) {
   const vertices = graph.getVertices();
   const adjList = graph.getAdjList();
-  const color: { [key: string]: Colors } = initializeColor(vertices);
   const queue = new Queue<T>();
+  const colors = [...vertices].reduce(
+    (sum, it) => {
+      sum[it] = Colors.WHITE;
+      return sum;
+    },
+    {} as { [key: string]: Colors }
+  );
   queue.enqueue(startVertex);
-  while (!queue.isEmpty) {
-    const u = queue.dequeue()!;
-    const neighbors = adjList.get(u)!;
-    color[u] = Colors.GREY;
-    neighbors.forEach((v) => {
-      if (color[v] === Colors.WHITE) {
-        color[v] = Colors.GREY;
-        queue.enqueue(v);
+  colors[startVertex] = Colors.GREY;
+  callback(startVertex);
+  while (queue.size) {
+    const it = queue.dequeue()!;
+    colors[it] = Colors.BLACK;
+    const u = adjList.get(it)!;
+    u.forEach((_it) => {
+      if (colors[_it] === Colors.WHITE) {
+        queue.enqueue(_it);
+        colors[_it] = Colors.GREY;
+        callback(_it);
       }
     });
-    color[u] = Colors.BLACK;
-    callback?.(u);
   }
 }
 
 export function bfs<T extends string = any>(graph: Graph<T>, v: T) {
-  const distances: { [key: string]: number } = {};
-  // 回溯点
-  const predecessors: { [key: string]: string | null } = {};
   const vertices = graph.getVertices();
-  vertices.forEach((v) => {
-    distances[v] = 0;
-    predecessors[v] = null;
-  });
-  const color: { [key: string]: Colors } = initializeColor(vertices);
-
   const adjList = graph.getAdjList();
+  const [colors, distances, predecessors] = [...vertices].reduce(
+    (sum, it) => {
+      sum[0][it] = Colors.WHITE;
+      sum[1][it] = 0;
+      sum[2][it] = null;
+      return sum;
+    },
+    [{}, {}, {}] as [
+      { [key: string]: Colors },
+      { [key: string]: number },
+      {
+        [key: string]: T | null;
+      },
+    ]
+  );
+
   const queue = new Queue<T>();
   queue.enqueue(v);
-  color[v] = Colors.GREY;
-  while (!queue.isEmpty) {
-    const it = queue.dequeue()!;
-    const u = adjList.get(it);
-    u?.forEach((_it) => {
-      if (color[_it] === Colors.WHITE) {
-        color[_it] = Colors.GREY;
-        queue.enqueue(_it);
-        distances[_it] = distances[it] + 1;
-        predecessors[_it] = it;
+  colors[v] = colors.GREY;
+  while (queue.size) {
+    const _v = queue.dequeue()!;
+    const u = adjList.get(_v)!;
+    u.forEach((it) => {
+      if (colors[it] === Colors.WHITE) {
+        queue.enqueue(it);
+        colors[it] = Colors.GREY;
+        predecessors[it] = _v;
+        distances[it] = distances[_v] + 1;
       }
     });
-    color[it] = Colors.BLACK;
+    colors[_v] = Colors.BLACK;
   }
-
   return {
     distances,
     predecessors,
   };
 }
 
-export function depthFirstSearch<T extends string = any>(
-  graph: Graph<T>,
-  startVertex: T,
+export function depthFirstSearch<T = any>(
+  graph: Graph,
+  v: T,
   callback: Function
 ) {
+  const stack = new Stack<T>();
   const vertices = graph.getVertices();
   const adjList = graph.getAdjList();
-  const color: { [key: string]: Colors } = initializeColor(vertices);
-  const stack = new Stack<T>();
-  stack.push(startVertex);
-  color[startVertex] = Colors.GREY;
-  callback(startVertex);
-  dfs(0);
-  function dfs(size: number) {
-    while (stack.size > size) {
-      const v = stack.peek()!;
-      const u = adjList.get(v)!;
-      u.forEach((_v) => {
-        if (color[_v] === Colors.WHITE) {
-          color[_v] = Colors.GREY;
-          stack.push(_v);
-          callback(_v);
-          dfs(size + 1);
-        }
-      });
-      stack.pop();
-      color[v] = Colors.BLACK;
-    }
+  const colors = [...vertices].reduce(
+    (sum, it) => {
+      sum[it] = Colors.WHITE;
+      return sum;
+    },
+    {} as { [key: string]: Colors }
+  );
+  dfs(v);
+
+  function dfs(it: T) {
+    colors[it] = Colors.GREY;
+    stack.push(it);
+    callback(it);
+    const u = adjList.get(it)!;
+    u.forEach((it) => {
+      if (colors[it] === Colors.WHITE) {
+        dfs(it);
+      }
+    });
+    stack.pop();
   }
 }
