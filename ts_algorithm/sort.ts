@@ -215,3 +215,80 @@ export function radixSort(arr: number[]) {
 
   return newArr.map((str) => +str - diff);
 }
+
+export function shellSort(arr: number[]) {
+  let len = arr.length;
+  if (len < 2) return arr;
+
+  let gap = 1;
+  while (gap < len / 3) {
+    // 动态定义间隔序列
+    gap = gap * 3 + 1;
+  }
+  //上面是设置动态增量算法
+  //下面是其实是插入排序 和 冒泡排序交换位置
+  while (gap >= 1) {
+    for (let i = 0; i < len; i++) {
+      //插入排序
+      for (let j = i; j >= gap && arr[j] < arr[j - gap]; j -= gap) {
+        [arr[j - gap], arr[j]] = [arr[j], arr[j - gap]];
+      }
+    }
+    gap = (gap - 1) / 3;
+  }
+  return arr;
+}
+
+// 交换法，性能比插入排序还差
+export function shellSort2(arr: number[]) {
+  let len = arr.length;
+  if (len < 2) return arr;
+
+  let count = 0; // 第几轮
+  for (
+    let gap = Math.floor(len / 2);
+    gap > 0;
+    gap = Math.floor(gap / 2)
+  ) {
+    for (let i = gap; i < len; i++) {
+      for (let j = i - gap; j >= 0; j -= gap) {
+        if (arr[j] > arr[j + gap]) {
+          [arr[j], arr[j + gap]] = [arr[j + gap], arr[j]];
+        }
+      }
+    }
+    count++;
+    console.log(`第${count}轮： ${arr.join(', ')}`);
+  }
+  return arr;
+}
+
+// 移位法
+export function shellSort3(arr: number[]) {
+  let len = arr.length;
+  if (len < 2) return arr;
+
+  let count = 0;
+  for (
+    let gap = Math.floor(len / 2);
+    gap > 0;
+    gap = Math.floor(gap / 2)
+  ) {
+    for (let i = gap; i < len; i++) {
+      let j = i;
+      let temp = arr[j];
+      if (arr[j] < arr[j - gap]) {
+        while (j >= gap && arr[j - gap] > temp) {
+          arr[j] = arr[j - gap];
+          j -= gap;
+        }
+        arr[j] = temp;
+
+        arr[j] = temp;
+      }
+    }
+    count++;
+    // console.log(`第${count}轮： ${arr.join(', ')}`);
+  }
+  return arr;
+}

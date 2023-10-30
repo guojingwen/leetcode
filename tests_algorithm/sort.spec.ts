@@ -10,6 +10,7 @@ import {
   bucketSort,
   heapSort,
   radixSort,
+  shellSort,
 } from '../ts_algorithm/sort';
 
 describe('test 排序算法', () => {
@@ -46,5 +47,8 @@ describe('test 排序算法', () => {
   });
   test('基数排序', () => {
     expect(radixSort(arr)).toEqual([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+  });
+  test('希尔排序', () => {
+    expect(shellSort(arr)).toEqual([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
   });
 });
