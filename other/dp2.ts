@@ -12,6 +12,7 @@ function getMaxCommonSeq(str1: string, str2: string) {
     )
   );
   let maxLen = 0;
+  // dp[i][j] 表示 字符串 `0-i`  与字符串 `0-j` 的最长公共子序列
   for (let i = 1; i < dp.length; i++) {
     for (let j = 1; j < dp[i].length; j++) {
       if (str1[i - 1] === str2[j - 1]) {

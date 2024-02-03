@@ -4,7 +4,8 @@
   "description": "leetcode算法练习",
   "main": "外星字典.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "npx vitest run tests/unit/example.test.js",
+    "tojs": "npx tsc ts/1.twosum.ts  --target ESNext"
   },
   "repository": {
     "type": "git",
