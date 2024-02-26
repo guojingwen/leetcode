@@ -1,3 +1,20 @@
+export function solution_dp1(A: number[]): number {
+  let dp = [A[0]];
+  const arr = [A[0]];
+  for (let i = 1; i < A.length; i++) {
+    const max = findMax(arr);
+    dp[i] = max + A[i];
+    if (arr.length === 6) {
+      arr.shift();
+    }
+    arr.push(dp[i]);
+  }
+  return dp[dp.length - 1];
+}
+
+function findMax(arr: number[]) {
+  return Math.max(...arr);
+}
 export function solution16_1(A: number[], B: number[]): number {
   if (A.length === 0) {
     return 0;
@@ -156,19 +173,20 @@ function getDivied(A: number[], maxSum: number) {
   return size;
 }
 
-// 1 1 2 3 5 8
-
-const mycaches = [1, 1];
+// 1 1 2 3 5 8 青蛙斐波那契跳
 function fibouncci(num: number) {
+  const mycaches = [1, 1];
   let max = mycaches[mycaches.length - 1];
   while (max < num) {
     const i = mycaches.length;
     max = mycaches[i - 1] + mycaches[i - 2];
     mycaches.push(max);
   }
+  mycaches.pop();
+  mycaches.shift();
+  return mycaches;
 }
-
-export function solution13_1(A: number[]): number {
+/* export function solution13_1(A: number[]): number {
   // Implement your solution here
   let start = -1;
   const end = A.length;
@@ -199,22 +217,32 @@ export function solution13_1(A: number[]): number {
     if (!index) return -1;
   }
   return -1;
-}
+} */
 
-export function solution_dp1(A: number[]): number {
-  let dp = [A[0]];
-  const arr = [A[0]];
-  for (let i = 1; i < A.length; i++) {
-    const max = findMax(arr);
-    dp[i] = max + A[i];
-    if (arr.length === 6) {
-      arr.shift();
-    }
-    arr.push(dp[i]);
+export function solution13_1(A: number[]): number {
+  A = [1, ...A, 1]; // 添加开始的位置-1，以及结束的位置N
+  const length: number = A.length;
+  const fibList: number[] = fibouncci(length);
+
+  if (fibList.includes(length - 1)) {
+    // 一次就可从位置-1跳到位置N
+    return 1;
   }
-  return dp[dp.length - 1];
-}
+  // 参照序列
+  const signList = Array.from({ length }, () => length);
+  signList[0] = 0;
 
-function findMax(arr: number[]) {
-  return Math.max(...arr);
+  for (let i = 1; i < length; i++) {
+    // 此处有树叶
+    if (A[i] === 1) {
+      // 遍历斐波那契数列, 寻找最少的跳跃次数
+      const j = fibList.find((it) => i - it === 0);
+      if (j) {
+        // 说明dis位置可以斐波那契到达的;
+        signList[i] = Math.min(signList[i - j] + 1, signList[i]);
+      }
+    }
+  }
+
+  return signList[length - 1] < length ? signList[length - 1] : -1;
 }

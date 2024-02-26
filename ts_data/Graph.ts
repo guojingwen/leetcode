@@ -156,6 +156,7 @@ export function depthFirstSearch<T = any>(
         dfs(it);
       }
     });
+    colors[it] = Colors.BLACK;
     stack.pop();
   }
 }
